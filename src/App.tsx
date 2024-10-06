@@ -1,7 +1,18 @@
 import { Gift } from "lucide-react";
-import React from "react";
+import React, { useState, useEffect } from "react";
 
 function App() {
+  const [name, setName] = useState("Aisla Leman");
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setName((prevName) =>
+        prevName === "Aisla Leman" ? "Айсла Leman" : "Aisla Leman",
+      );
+    }, 5000);
+    return () => clearInterval(interval);
+  }, []);
+
   return (
     <div
       className="min-h-screen bg-cover bg-center flex items-center justify-center"
@@ -11,17 +22,7 @@ function App() {
       }}
     >
       <div className="bg-white bg-opacity-80 p-8 rounded-lg shadow-lg text-center">
-        <h1 className="text-4xl font-bold mb-4 text-pink-600">
-          {React.useState(["Aisla Leman", "Айсла Леман"])[0]}
-        </h1>
-        {React.useEffect(() => {
-          const interval = setInterval(() => {
-            setName((prevName) =>
-              prevName === "Aisla Leman" ? "Айсла Леман" : "Aisla Leman",
-            );
-          }, 5000);
-          return () => clearInterval(interval);
-        }, [])}
+        <h1 className="text-4xl font-bold mb-4 text-pink-600">{name}</h1>
         <p className="text-xl mb-6 text-gray-700">
           Arriving November 11th 2024
         </p>
