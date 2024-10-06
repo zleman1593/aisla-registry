@@ -1,18 +1,19 @@
 import { Gift } from "lucide-react";
 import React, { useState, useEffect } from "react";
-import { SnakeGame } from "./snake";
 
 function App() {
-  const [name, setName] = useState("Aisla Leman");
-  const [showSnakeGame, setShowSnakeGame] = useState(false);
+  const [name, setName] = useState("Aisla ");
   const [progressPercentage, setProgressPercentage] = useState(0);
   const [animatedProgress, setAnimatedProgress] = useState(0);
+  const [fade, setFade] = useState(false);
 
   useEffect(() => {
     const interval = setInterval(() => {
-      setName((prevName) =>
-        prevName === "Aisla Leman" ? "Айсла Leman" : "Aisla Leman",
-      );
+      setFade(true);
+      setTimeout(() => {
+        setName((prevName) => (prevName === "Aisla  " ? "Айсла " : "Aisla  "));
+        setFade(false);
+      }, 500);
     }, 5000);
     return () => clearInterval(interval);
   }, []);
@@ -61,10 +62,6 @@ function App() {
     return () => clearInterval(animationInterval);
   }, [progressPercentage]);
 
-  const handleNameClick = () => {
-    setShowSnakeGame(true);
-  };
-
   return (
     <>
       <div
@@ -76,10 +73,19 @@ function App() {
       >
         <div className="bg-white bg-opacity-80 p-8 rounded-lg shadow-lg text-center">
           <h1
-            className="text-4xl font-bold mb-4 text-pink-600 cursor-pointer"
-            onClick={handleNameClick}
+            className={`text-4xl font-bold mb-4 text-pink-600 cursor-pointer`}
           >
-            {name}
+            <span
+              className={
+                fade
+                  ? "transition-opacity duration-500 opacity-0"
+                  : "transition-opacity duration-500 opacity-100"
+              }
+            >
+              {" "}
+              {name}
+            </span>
+            Leman
           </h1>
           <p className="text-xl mb-2 text-gray-700">
             Arriving November 11th 2024
@@ -102,11 +108,7 @@ function App() {
           </a>
         </div>
       </div>
-      {showSnakeGame && (
-        <div className="fixed inset-0 z-50">
-          <SnakeGame />
-        </div>
-      )}
+      );
     </>
   );
 }

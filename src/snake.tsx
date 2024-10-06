@@ -1,6 +1,11 @@
 import type React from "react";
 import { useEffect, useRef, useState } from "react";
 
+interface Position {
+  x: number;
+  y: number;
+}
+const GAME_SPEED = 150;
 export const SnakeGame: React.FC = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [score, setScore] = useState(0);
@@ -13,8 +18,8 @@ export const SnakeGame: React.FC = () => {
       const tileSize = 40;
       let tilesX: number;
       let tilesY: number;
-      const snake = [{ x: 10, y: 10 }];
-      let food = { x: 15, y: 15 };
+      const snake: Position[] = [{ x: 10, y: 10 }];
+      let food: Position = { x: 15, y: 15 };
       let dx = 1;
       let dy = 0;
 
@@ -26,24 +31,46 @@ export const SnakeGame: React.FC = () => {
       foodImage.src =
         "https://e7.pngegg.com/pngimages/730/960/png-clipart-blue-feeding-bottle-illustration-baby-bottles-emoji-infant-sticker-milk-bottle-united-states-dollar-water-bottles.png";
 
-      const spawnNewFood = () => {
+      // Create off-screen canvas
+      const offscreenCanvas = document.createElement("canvas");
+      const offscreenContext = offscreenCanvas.getContext("2d");
+
+      const spawnNewFood = (): Position => {
         const maxTileX = tilesX - 1;
         const maxTileY = tilesY - 1;
-        let newFoodPosition;
+        let newFoodPosition: Position;
         do {
           newFoodPosition = {
             x: Math.floor(Math.random() * maxTileX),
             y: Math.floor(Math.random() * maxTileY),
           };
-        } while (snake.some(segment => segment.x === newFoodPosition.x && segment.y === newFoodPosition.y));
+        } while (
+          snake.some(
+            (segment) =>
+              segment.x === newFoodPosition.x &&
+              segment.y === newFoodPosition.y,
+          )
+        );
         return newFoodPosition;
       };
 
       const gameLoop = () => {
-        context.clearRect(0, 0, canvas.width, canvas.height);
+        if (!offscreenContext) return;
+
+        offscreenContext.clearRect(
+          0,
+          0,
+          offscreenCanvas.width,
+          offscreenCanvas.height,
+        );
 
         // Move snake
         const head = { x: snake[0].x + dx, y: snake[0].y + dy };
+
+        // Wrap around logic
+        head.x = (head.x + tilesX) % tilesX;
+        head.y = (head.y + tilesY) % tilesY;
+
         snake.unshift(head);
 
         // Check for collision with food
@@ -55,18 +82,18 @@ export const SnakeGame: React.FC = () => {
         }
 
         // Draw snake
-        snake.forEach((segment) => {
-          context.drawImage(
+        for (const segment of snake) {
+          offscreenContext.drawImage(
             snakeImage,
             segment.x * tileSize,
             segment.y * tileSize,
             tileSize * 1.5,
             tileSize * 1.5,
           );
-        });
+        }
 
         // Draw food
-        context.drawImage(
+        offscreenContext.drawImage(
           foodImage,
           food.x * tileSize,
           food.y * tileSize,
@@ -75,11 +102,15 @@ export const SnakeGame: React.FC = () => {
         );
 
         // Draw score
-        context.fillStyle = "white";
-        context.font = "20px Arial";
-        context.fillText(`Score: ${score}`, 10, 30);
+        offscreenContext.fillStyle = "white";
+        offscreenContext.font = "20px Arial";
+        offscreenContext.fillText(`Score: ${score}`, 10, 30);
 
-        setTimeout(() => requestAnimationFrame(gameLoop), 200);
+        // Copy off-screen canvas to visible canvas
+        context.clearRect(0, 0, canvas.width, canvas.height);
+        context.drawImage(offscreenCanvas, 0, 0);
+
+        setTimeout(() => requestAnimationFrame(gameLoop), GAME_SPEED);
       };
 
       const handleKeyDown = (event: KeyboardEvent) => {
@@ -108,6 +139,8 @@ export const SnakeGame: React.FC = () => {
       const handleResize = () => {
         canvas.width = window.innerWidth;
         canvas.height = window.innerHeight;
+        offscreenCanvas.width = canvas.width;
+        offscreenCanvas.height = canvas.height;
         tilesX = Math.floor(canvas.width / tileSize);
         tilesY = Math.floor(canvas.height / tileSize);
       };
@@ -115,7 +148,13 @@ export const SnakeGame: React.FC = () => {
       window.addEventListener("resize", handleResize);
       handleResize();
 
-      gameLoop();
+      // Wait for images to load before starting the game loop
+      Promise.all([
+        new Promise((resolve) => (snakeImage.onload = resolve)),
+        new Promise((resolve) => (foodImage.onload = resolve)),
+      ]).then(() => {
+        gameLoop();
+      });
 
       return () => {
         window.removeEventListener("keydown", handleKeyDown);
