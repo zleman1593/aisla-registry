@@ -10,7 +10,9 @@ export const SnakeGame: React.FC = () => {
     const context = canvas?.getContext("2d");
 
     if (canvas && context) {
-      const tileSize = 20;
+      const tileSize = 40;
+      let tilesX: number;
+      let tilesY: number;
       const snake = [{ x: 10, y: 10 }];
       let food = { x: 15, y: 15 };
       let dx = 1;
@@ -25,10 +27,16 @@ export const SnakeGame: React.FC = () => {
         "https://e7.pngegg.com/pngimages/730/960/png-clipart-blue-feeding-bottle-illustration-baby-bottles-emoji-infant-sticker-milk-bottle-united-states-dollar-water-bottles.png";
 
       const spawnNewFood = () => {
-        return {
-          x: Math.floor(Math.random() * (canvas.width / tileSize)),
-          y: Math.floor(Math.random() * (canvas.height / tileSize)),
-        };
+        const maxTileX = tilesX - 1;
+        const maxTileY = tilesY - 1;
+        let newFoodPosition;
+        do {
+          newFoodPosition = {
+            x: Math.floor(Math.random() * maxTileX),
+            y: Math.floor(Math.random() * maxTileY),
+          };
+        } while (snake.some(segment => segment.x === newFoodPosition.x && segment.y === newFoodPosition.y));
+        return newFoodPosition;
       };
 
       const gameLoop = () => {
@@ -52,8 +60,8 @@ export const SnakeGame: React.FC = () => {
             snakeImage,
             segment.x * tileSize,
             segment.y * tileSize,
-            tileSize,
-            tileSize,
+            tileSize * 1.5,
+            tileSize * 1.5,
           );
         });
 
@@ -62,8 +70,8 @@ export const SnakeGame: React.FC = () => {
           foodImage,
           food.x * tileSize,
           food.y * tileSize,
-          tileSize,
-          tileSize,
+          tileSize * 1.2,
+          tileSize * 1.2,
         );
 
         // Draw score
@@ -100,6 +108,8 @@ export const SnakeGame: React.FC = () => {
       const handleResize = () => {
         canvas.width = window.innerWidth;
         canvas.height = window.innerHeight;
+        tilesX = Math.floor(canvas.width / tileSize);
+        tilesY = Math.floor(canvas.height / tileSize);
       };
 
       window.addEventListener("resize", handleResize);
