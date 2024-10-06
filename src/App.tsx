@@ -1,5 +1,6 @@
 import { Gift } from "lucide-react";
 import React, { useState, useEffect } from "react";
+import { startSnakeGame } from "./snake";
 
 function App() {
   const [name, setName] = useState("Aisla Leman");
@@ -13,6 +14,10 @@ function App() {
     return () => clearInterval(interval);
   }, []);
 
+  const handleNameClick = () => {
+    startSnakeGame();
+  };
+
   return (
     <div
       className="min-h-screen bg-cover bg-center flex items-center justify-center"
@@ -22,7 +27,12 @@ function App() {
       }}
     >
       <div className="bg-white bg-opacity-80 p-8 rounded-lg shadow-lg text-center">
-        <h1 className="text-4xl font-bold mb-4 text-pink-600">{name}</h1>
+        <h1
+          className="text-4xl font-bold mb-4 text-pink-600"
+          onClick={handleNameClick}
+        >
+          {name}
+        </h1>
         <p className="text-xl mb-6 text-gray-700">
           Arriving November 11th 2024
         </p>
