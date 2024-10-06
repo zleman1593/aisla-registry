@@ -6,6 +6,7 @@ function App() {
   const [progressPercentage, setProgressPercentage] = useState(0);
   const [animatedProgress, setAnimatedProgress] = useState(0);
   const [fade, setFade] = useState(false);
+  const [showVideo, setShowVideo] = useState(false);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -62,6 +63,10 @@ function App() {
     return () => clearInterval(animationInterval);
   }, [progressPercentage]);
 
+  const handleNameClick = () => {
+    setShowVideo(true);
+  };
+
   return (
     <>
       <div
@@ -71,9 +76,21 @@ function App() {
             'url("https://aisla-leman.vercel.app/posts/aisla.jpg")',
         }}
       >
-        <div className="bg-white bg-opacity-80 p-8 rounded-lg shadow-lg text-center">
+        {showVideo && (
+          <video
+            autoPlay
+            loop
+            muted
+            className="absolute z-0 w-auto min-w-full min-h-full max-w-none"
+          >
+            <source src="./video.mp4" type="video/mp4" />
+            Your browser does not support the video tag.
+          </video>
+        )}
+        <div className="bg-white bg-opacity-80 p-8 rounded-lg shadow-lg text-center relative z-10">
           <h1
-            className={`text-4xl font-bold mb-4 text-pink-600 cursor-pointer`}
+            className="text-4xl font-bold mb-4 text-pink-600 cursor-pointer"
+            onClick={handleNameClick}
           >
             <span
               className={
@@ -100,7 +117,7 @@ function App() {
             <div
               className="absolute left-0 top-0 bottom-0 bg-pink-600 transition-all duration-1000"
               style={{ width: `${animatedProgress}%` }}
-            ></div>
+            />
             <span className="relative z-10 flex items-center justify-center w-full">
               <Gift className="mr-2" />
               View Aisla's Registry
