@@ -2,7 +2,7 @@ import { Gift } from "lucide-react";
 import React, { useState, useEffect } from "react";
 
 function App() {
-  const [name, setName] = useState("Aisla ");
+  const [name, setName] = useState("Aisla  ");
   const [progressPercentage, setProgressPercentage] = useState(0);
   const [animatedProgress, setAnimatedProgress] = useState(0);
   const [fade, setFade] = useState(false);
@@ -106,9 +106,25 @@ function App() {
               View Aisla's Registry
             </span>
           </a>
+          {/* <div className="mt-6 text-gray-700">
+            <p>
+              <b>A</b> tender angel graces us, so smal<b>l</b>
+            </p>
+            <p>
+              <b>I</b>nnocent eyes reflect the purest lov<b>e</b>
+            </p>
+            <p>
+              <b>S</b>oftly sleeping, dreams embrace you war<b>m</b>
+            </p>
+            <p>
+              <b>L</b>ife is brighter now with you, Aisl<b>a</b>
+            </p>
+            <p>
+              <b>A</b>ll the world awaits your first daw<b>n</b>
+            </p>
+          </div> */}
         </div>
       </div>
-      );
     </>
   );
 }
