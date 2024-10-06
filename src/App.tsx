@@ -1,5 +1,5 @@
-import React from 'react';
-import { Gift } from 'lucide-react';
+import { Gift } from "lucide-react";
+import React from "react";
 
 function App() {
   return (
@@ -11,7 +11,17 @@ function App() {
       }}
     >
       <div className="bg-white bg-opacity-80 p-8 rounded-lg shadow-lg text-center">
-        <h1 className="text-4xl font-bold mb-4 text-pink-600">Aisla Leman</h1>
+        <h1 className="text-4xl font-bold mb-4 text-pink-600">
+          {React.useState(["Aisla Leman", "Айсла Леман"])[0]}
+        </h1>
+        {React.useEffect(() => {
+          const interval = setInterval(() => {
+            setName((prevName) =>
+              prevName === "Aisla Leman" ? "Айсла Леман" : "Aisla Leman",
+            );
+          }, 5000);
+          return () => clearInterval(interval);
+        }, [])}
         <p className="text-xl mb-6 text-gray-700">
           Arriving November 11th 2024
         </p>
