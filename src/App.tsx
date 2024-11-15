@@ -105,7 +105,7 @@ function App() {
             Leman
           </h1>
           <p className="text-xl mb-2 text-gray-700">
-            Arriving November 16th 2024 🤞
+            Arriving November 15th 2024
           </p>
           <a
             href="https://www.amazon.com/baby-reg/gayana-leman-gayana-leman-november-2024-losangeles/18XG54OIUA6QN"
